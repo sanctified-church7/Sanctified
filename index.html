@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sanctified.church</title>
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<style>
+  /* Root colors and variables */
+  :root {
+    --text: #efece6;
+    --muted: rgba(255,255,255,0.65);
+    --primary: gold;
+    --secondary: #00cfff;
+    --max-width: 1400px;
+  }
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: 'Trebuchet MS', Verdana, sans-serif;
+    background: #000;
+    color: var(--text);
+    overflow-x: hidden;
+  }
+  /* Container */
+  .container { max-width: var(--max-width); margin:auto; }
+  
+  /* Header */
+  header {
+    position: relative;
+    text-align: center;
+    padding: 24px 12px;
+    z-index: 10;
+  }
+  .logo { width: 100px; height: 100px; margin: 0 auto 12px; }
+  .logo img { width: 100%; height: auto; border-radius: 12px; }
+  h1 {
+    font-size: 3vw; 
+    color: var(--primary);
+    text-shadow: 0 0 12px var(--primary), 0 0 24px var(--secondary);
+    animation: pulseHeader 3s ease-in-out infinite alternate;
+  }
+  @keyframes pulseHeader {
+    0% { text-shadow: 0 0 12px var(--primary), 0 0 24px var(--secondary);}
+    100% { text-shadow: 0 0 24px var(--primary), 0 0 48px var(--secondary);}
+  }
+
+  /* Hero MP4/JPG background */
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 80vh;
+    overflow: hidden;
+    perspective: 1000px;
+  }
+  .hero video, .hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease;
+  }
+  .hero video { display: block; }
+  .hero img { display: none; }
+
+  /* Particle overlay */
+  .particles {
+    position: absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:5;
+  }
+  .particle {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: gold;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: particleMove linear infinite;
+  }
+  @keyframes particleMove {
+    0% { transform: translateY(0) scale(1); opacity:0.5;}
+    100% { transform: translateY(-120vh) scale(0.5); opacity:0;}
+  }
+
+  /* Sanctified Radio Player */
+  .player {
+    position: relative;
+    max-width: 600px;
+    margin: -80px auto 40px auto;
+    background: #111;
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.7);
+    border: 2px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(6px);
+    color: var(--text);
+    z-index:10;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+  }
+  .player .display {
+    font-family: monospace;
+    color: var(--primary);
+    font-size: 16px;
+    background: rgba(0,0,0,0.3);
+    width: 100%;
+    text-align: center;
+    padding: 6px 0;
+    border-radius: 6px;
+  }
+  .player button {
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.06);
+    color: var(--text);
+    cursor:pointer;
+    font-weight:600;
+    min-width:120px;
+    margin:2px;
+  }
+  .player input[type=range] {
+    width: 120px;
+  }
+  .equalizer {
+    display:flex;
+    gap:4px;
+    height:30px;
+    margin-top:6px;
+    width:100%;
+    justify-content:center;
+    align-items:flex-end;
+  }
+  .bar {
+    width:6px;
+    background: linear-gradient(to top, gold, var(--secondary));
+    animation: bounce 0.8s infinite alternate;
+  }
+  @keyframes bounce {
+    0% { height:5px; }
+    50% { height:20px; }
+    100% { height:5px; }
+  }
+
+  /* Floating Social Box */
+  .social-box {
+    position: fixed;
+    top:50%;
+    right:20px;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.6);
+    padding:12px;
+    border-radius:12px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    z-index:15;
+  }
+  .social-box a {
+    color: gold;
+    text-decoration:none;
+    font-weight:600;
+  }
+
+  /* Footer */
+  footer {
+    position: fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    background: rgba(0,0,0,0.7);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:8px 20px;
+    font-size:12px;
+    color: var(--muted);
+    z-index:10;
+  }
+  footer img { width:40px; height:auto; border-radius:6px; }
+
+  @media (max-width:768px){
+    h1 { font-size:5vw; }
+    .player { max-width:90%; }
+    .social-box { right:10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <img src="logo.jpg" alt="Sanctified Logo">
+    </div>
+    <h1>Sanctified.church</h1>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <video id="heroVideo" autoplay muted loop playsinline>
+      <source src="sanctuary.mp4" type="video/mp4">
+      Your browser does not support the video. <img src="sanctuary.jpg" alt="Sanctuary fallback">
+    </video>
+    <img id="heroImg" src="sanctuary.jpg" alt="Sanctuary fallback">
+    <canvas class="particles"></canvas>
+  </section>
+
+  <!-- Player -->
+  <div class="player">
+    <div class="display" id="radioDisplay">0.000</div>
+    <div>
+      <button id="playBell">Church Bell</button>
+      <button id="stopBell">Stop Bell</button>
+      <input type="range" id="bellVolume" min="0" max="1" step="0.01" value="0.8">
+    </div>
+    <div>
+      <button id="playPraise">Praise Music</button>
+      <button id="stopPraise">Stop</button>
+      <input type="range" id="praiseVolume" min="0" max="1" step="0.01" value="0.8">
+    </div>
+    <div>
+      <button id="playWorship">Worship Music</button>
+      <button id="stopWorship">Stop</button>
+      <input type="range" id="worshipVolume" min="0" max="1" step="0.01" value="0.8">
+    </div>
+    <div>
+      <button id="playChildren">Children's Song</button>
+      <button id="stopChildren">Stop</button>
+      <input type="range" id="childrenVolume" min="0" max="1" step="0.01" value="0.8">
+    </div>
+    <div class="equalizer" id="equalizer"></div>
+  </div>
+
+  <!-- Social floating box -->
+  <div class="social-box">
+    <a href="https://rumble.com/user/Sanctified" target="_blank">Rumble</a>
+    <a href="https://www.facebook.com/share/17jwHrTCkN/" target="_blank">Facebook</a>
+    <a href="mailto:sanctifiedchurch7@gmail.com">Contact</a>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<footer>
+  <img src="logo.jpg" alt="Sanctified Logo">
+  <div>© 2025 Sanctified.church — All rights reserved</div>
+</footer>
+
+<!-- Audio Elements -->
+<audio id="bellAudio" src="bell.wave" preload="auto"></audio>
+<audio id="praiseAudio" src="sanctified1.mp3" preload="auto"></audio>
+<audio id="worshipAudio" src="sanctified2.mp3" preload="auto"></audio>
+<audio id="childrenAudio" src="sanctified3.mp3" preload="auto"></audio>
+
+<script>
+  // Visitor counter hidden in radio display
+  let visitorCount = localStorage.getItem('visitorCount') || 0;
+  visitorCount++;
+  localStorage.setItem('visitorCount', visitorCount);
+  document.getElementById('radioDisplay').innerText = (visitorCount / 1000).toFixed(3);
+
+  // Particle generation
+  const canvas = document.querySelector('.particles');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const particles = [];
+  for(let i=0;i<80;i++){
+    particles.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*2+1, speed: Math.random()*1+0.2});
+  }
+  function animateParticles(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,2*Math.PI);
+      ctx.fillStyle="gold";
+      ctx.fill();
+      p.y -= p.speed;
+      if(p.y<0){p.y=canvas.height; p.x=Math.random()*canvas.width;}
+    });
+    requestAnimationFrame(animateParticles);
+  }
+  animateParticles();
+
+  // 3D Tilt Effect
+  const hero = document.querySelector('.hero video, .hero img');
+  window.addEventListener('deviceorientation', e => {
+    const x = e.gamma || 0;
+    const y = e.beta || 0;
+    const xr = (x / 45) * 10;
+    const yr = (y / 45) * 10;
+    document.querySelector('.hero video, .hero img').style.transform = `rotateY(${xr}deg) rotateX(${-yr}deg) scale(1.02)`;
+  });
+
+  // Audio Elements
+  const bell = document.getElementById('bellAudio');
+  const praise = document.getElementById('praiseAudio');
+  const worship = document.getElementById('worshipAudio');
+  const children = document.getElementById('childrenAudio');
+
+  function stopAll(){
+    [bell,praise,worship,children].forEach(a=>{a.pause(); a.currentTime=0;});
+  }
+
+  // Church bell auto-ring 3x on Sundays
+  const today = new Date();
+  if(today.getDay() === 0){ // Sunday
+    setTimeout(()=>{bell.play();},1000);
+    setTimeout(()=>{bell.play();},3000);
+    setTimeout(()=>{bell.play();},5000);
+  }
+
+  // Button events
+  document.getElementById('playBell').addEventListener('click',()=>{bell.play();});
+  document.getElementById('stopBell').addEventListener('click',()=>{bell.pause(); bell.currentTime=0;});
+  document.getElementById('bellVolume').addEventListener('input',e=>{bell.volume=e.target.value;});
+
+  document.getElementById('playPraise').addEventListener('click',()=>{stopAll(); praise.play();});
+  document.getElementById('stopPraise').addEventListener('click',()=>{praise.pause(); praise.currentTime=0;});
+  document.getElementById('praiseVolume').addEventListener('input',e=>{praise.volume=e.target.value;});
+
+  document.getElementById('playWorship').addEventListener('click',()=>{stopAll(); worship.play();});
+  document.getElementById('stopWorship').addEventListener('click',()=>{worship.pause(); worship.currentTime=0;});
+  document.getElementById('worshipVolume').addEventListener('input',e=>{worship.volume=e.target.value;});
+
+  document.getElementById('playChildren').addEventListener('click',()=>{stopAll(); children.play();});
+  document.getElementById('stopChildren').addEventListener('click',()=>{children.pause(); children.currentTime=0;});
+  document.getElementById('childrenVolume').addEventListener('input',e=>{children.volume=e.target.value;});
+
+  // Equalizer Animation
+  const eqContainer = document.getElementById('equalizer');
+  const bars = [];
+  for(let i=0;i<20;i++){
+    const bar = document.createElement('div');
+    bar.className='bar';
+    bar.style.animationDelay = (i*0.1)+'s';
+    eqContainer.appendChild(bar);
+    bars.push(bar);
+  }
+</script>
+</body>
+</html>
